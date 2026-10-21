@@ -191,12 +191,6 @@ class NavAccessibilityService : AccessibilityService() {
         PixelFormat.TRANSLUCENT
     )
 
-    private fun pillBackground() = GradientDrawable().apply {
-        setColor(0xE61C1C1E.toInt())
-        cornerRadius = dp(40).toFloat()
-        setStroke(dp(1), 0x40FFFFFF)
-    }
-
     // ----- الشريط الكامل (ثابت أسفل الشاشة، أو فوق لوحة المفاتيح عند التوسيع) -----
     private fun addBar(btn: Int, sh: Int) {
         val root = LinearLayout(this).apply {
@@ -204,8 +198,6 @@ class NavAccessibilityService : AccessibilityService() {
             // ترتيب عربي: الأول (رجوع) يظهر في أقصى اليمين
             layoutDirection = View.LAYOUT_DIRECTION_RTL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(8), dp(4), dp(8), dp(4))
-            background = pillBackground()
             alpha = prefs.alphaPct / 100f
         }
 
@@ -264,13 +256,8 @@ class NavAccessibilityService : AccessibilityService() {
         val v = ImageView(this)
         v.setImageResource(R.drawable.ic_nav)
         v.scaleType = ImageView.ScaleType.FIT_CENTER
-        v.setPadding(btn / 5, btn / 5, btn / 5, btn / 5)
+        v.setPadding(btn / 6, btn / 6, btn / 6, btn / 6)
         v.contentDescription = getString(R.string.recents)
-        v.background = GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-            setColor(0xE61C1C1E.toInt())
-            setStroke(dp(1), 0x40FFFFFF)
-        }
         v.alpha = prefs.alphaPct / 100f
 
         val top = if (kbTop > 0) kbTop else (sh * 0.6f).toInt()
