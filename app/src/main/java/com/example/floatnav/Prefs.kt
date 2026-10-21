@@ -24,11 +24,11 @@ class Prefs(context: Context) {
         get() = sp.getString("pinned_pkg", "") ?: ""
         set(v) = sp.edit().putString("pinned_pkg", v).apply()
 
-    var posX: Int
-        get() = sp.getInt("pos_x", -1)
-        set(v) = sp.edit().putInt("pos_x", v).apply()
+    var kbX: Int
+        get() = sp.getInt("kb_x", -1)
+        set(v) = sp.edit().putInt("kb_x", v).apply()
 
-    var posY: Int
-        get() = sp.getInt("pos_y", -1)
-        set(v) = sp.edit().putInt("pos_y", v).apply()
+    var kbY: Int
+        get() = sp.getInt("kb_y", -1)
+        set(v) = sp.edit().putInt("kb_y", v).apply()
 }

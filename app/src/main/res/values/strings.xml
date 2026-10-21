@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">شريط التنقل العائم</string>
-    <string name="service_description">يعرض شريط تنقل عائماً (رجوع، رئيسية، التطبيقات الحديثة، واختصار ذكي) وينفّذ إجراءات التنقل نيابةً عن أزرار النظام. لا يقرأ أي محتوى من الشاشة.</string>
+    <string name="service_description">يعرض شريط تنقل عائماً (رجوع، رئيسية، التطبيقات الحديثة، واختصار ذكي) وينفّذ إجراءات التنقل نيابةً عن أزرار النظام. يستخدم صلاحية قائمة النوافذ لمعرفة ظهور لوحة المفاتيح فقط، ولا يقرأ أي نص أو محتوى من الشاشة.</string>
     <string name="back">رجوع</string>
     <string name="home">الرئيسية</string>
     <string name="recents">التطبيقات الحديثة</string>
