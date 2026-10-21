@@ -28,6 +28,10 @@ class NavAccessibilityService : AccessibilityService() {
     companion object {
         @Volatile
         var instance: NavAccessibilityService? = null
+        @Volatile
+        var barShown: Boolean = false
+        @Volatile
+        var lastError: String? = null
     }
 
     private lateinit var wm: WindowManager
@@ -46,6 +50,7 @@ class NavAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         instance = this
+        suppressed = false
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
         prefs = Prefs(this)
         prefs.sp.registerOnSharedPreferenceChangeListener(prefListener)
@@ -92,6 +97,7 @@ class NavAccessibilityService : AccessibilityService() {
     private fun removeBar() {
         bar?.let { try { wm.removeView(it) } catch (_: Exception) {} }
         bar = null
+        barShown = false
     }
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
@@ -118,6 +124,15 @@ class NavAccessibilityService : AccessibilityService() {
     }
 
     private fun rebuild() {
+        try {
+            rebuildInternal()
+        } catch (e: Throwable) {
+            barShown = false
+            lastError = e.javaClass.simpleName + ": " + (e.message ?: "")
+        }
+    }
+
+    private fun rebuildInternal() {
         removeBar()
         if (!prefs.enabled) return
         refreshSmart()
@@ -182,7 +197,11 @@ class NavAccessibilityService : AccessibilityService() {
         try {
             wm.addView(root, params)
             bar = root
-        } catch (_: Exception) {
+            barShown = true
+            lastError = null
+        } catch (e: Exception) {
+            barShown = false
+            lastError = "addView: " + e.javaClass.simpleName + ": " + (e.message ?: "")
         }
     }
 

@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.widget.Button
 import android.widget.SeekBar
@@ -19,6 +21,7 @@ class MainActivity : Activity() {
     private lateinit var tvAlpha: TextView
     private lateinit var tvSmart: TextView
     private lateinit var tvUsage: TextView
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +71,19 @@ class MainActivity : Activity() {
             prefs.pinnedPkg = ""
             updateUi()
         }
+        findViewById<Button>(R.id.btnTest).setOnClickListener {
+            val svc = NavAccessibilityService.instance
+            if (svc == null) {
+                updateUi()
+            } else {
+                svc.setSuppressed(false)
+                handler.postDelayed({
+                    NavAccessibilityService.instance?.setSuppressed(true)
+                    updateUi()
+                }, 5000)
+                handler.postDelayed({ updateUi() }, 600)
+            }
+        }
         findViewById<Button>(R.id.btnUsage).setOnClickListener {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
@@ -88,10 +104,14 @@ class MainActivity : Activity() {
     }
 
     private fun updateUi() {
-        tvStatus.text = if (isServiceEnabled())
-            "✅ خدمة الوصول مفعّلة — الشريط يعمل"
-        else
-            "⚠️ خدمة الوصول غير مفعّلة. فعّل «شريط التنقل العائم» من الإعدادات لكي يظهر الشريط وتعمل الأزرار."
+        val running = NavAccessibilityService.instance != null
+        val err = NavAccessibilityService.lastError
+        tvStatus.text = when {
+            running && err != null -> "❌ الخدمة تعمل لكن فشل عرض الشريط:\n$err"
+            running -> "✅ الخدمة تعمل. الشريط مخفي مؤقتًا لأن هذا التطبيق مفتوح — اضغط زر الاختبار أو اخرج للشاشة الرئيسية."
+            isServiceEnabled() -> "⚠️ الخدمة مفعّلة في الإعدادات لكنها غير متصلة. أوقفها ثم شغّلها من جديد، واستثنِ التطبيق من تحسين البطارية."
+            else -> "⚠️ خدمة الوصول غير مفعّلة. فعّل «شريط التنقل العائم» من الإعدادات."
+        }
         tvSize.text = "حجم الأزرار: ${prefs.sizeDp} dp"
         tvAlpha.text = "درجة الظهور: ${prefs.alphaPct}%"
         val pinned = prefs.pinnedPkg

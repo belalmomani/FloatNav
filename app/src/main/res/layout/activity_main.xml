@@ -30,6 +30,12 @@
             android:layout_height="wrap_content"
             android:text="فتح إعدادات خدمة الوصول" />
 
+        <Button
+            android:id="@+id/btnTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="اختبار: أظهر الشريط 5 ثوانٍ" />
+
         <Switch
             android:id="@+id/switchEnabled"
             android:layout_width="match_parent"
